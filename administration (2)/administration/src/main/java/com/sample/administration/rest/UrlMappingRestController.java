@@ -1,5 +1,6 @@
 package com.sample.administration.rest;
 import com.sample.administration.entity.UrlMapping;
+import com.sample.administration.exception.NotFoundException;
 import com.sample.administration.service.UrlMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class UrlMappingRestController {
         UrlMapping theLink = urlMappingService.findById(linkId);
 
         if (theLink == null) {
-            throw new RuntimeException("the link id not found - " + linkId);
+            throw new NotFoundException("the link id not found - " + linkId);
         }
 
         return theLink;
