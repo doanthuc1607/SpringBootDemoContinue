@@ -1,5 +1,6 @@
-package com.sample.administration.config;
+package com.sample.administration.security;
 
+import com.sample.administration.config.CustomAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,14 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register", "/login", "/api/**").permitAll() // Allow public access to /register endpoint
                         .anyRequest().authenticated() // Other requests require authentication
                 )
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
-                .addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // Add custom filter
+//                .addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // Add custom filter
 
         return http.build();
     }
