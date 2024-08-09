@@ -1,7 +1,12 @@
 package com.sample.administration.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name="urlmapping")
 public class UrlMapping {
@@ -31,30 +36,6 @@ public class UrlMapping {
     }
 
     // define getter/setter
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getShortLink() {
-        return shortLink;
-    }
-
-    public void setShortLink(String shortLink) {
-        this.shortLink = shortLink;
-    }
-
-    public String getOriginalLink() {
-        return originalLink;
-    }
-
-    public void setOriginalLink(String originalLink) {
-        this.originalLink = originalLink;
-    }
 
 
     // define toString

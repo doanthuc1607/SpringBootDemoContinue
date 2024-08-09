@@ -1,8 +1,14 @@
-package com.sample.administration.rest;
+package com.sample.administration.controller;
+import com.sample.administration.dto.UrlMappingRequest;
 import com.sample.administration.entity.UrlMapping;
 import com.sample.administration.exception.NotFoundException;
 import com.sample.administration.service.UrlMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class UrlMappingRestController {
 
-    private UrlMappingService urlMappingService;
+    private final UrlMappingService urlMappingService;
 
     @Autowired
     public UrlMappingRestController(UrlMappingService theUrlMappingService) {
@@ -35,43 +41,33 @@ public class UrlMappingRestController {
         return theLink;
     }
 
-    @PostMapping("/links")
-    public UrlMapping addUrlMapping(@RequestBody UrlMapping theLink) {
-
-        // also just in case they pass an id in JSON ... set id to 0
-        // this is to force a save of new item ... instead of update
-
-        theLink.setId(0);
-
-        UrlMapping dbUrlMapping = urlMappingService.save(theLink);
-
-        return dbUrlMapping;
-    }
-
-
-    @PutMapping("/links")
-    public UrlMapping updateUrlMapping(@RequestBody UrlMapping theLink) {
-
-        UrlMapping dbUrlMapping = urlMappingService.save(theLink);
-
-        return dbUrlMapping;
+    @PostMapping("/add/link")
+    public UrlMapping addUrlMapping(@RequestBody UrlMappingRequest urlMapping) {
+        return urlMappingService.save(urlMapping.getOriginalLink());
     }
 
 
     @DeleteMapping("/links/{linkId}")
-    public String deleteUrlMapping(@PathVariable int linkId) {
+    public ResponseEntity<String> deleteUrlMapping(@PathVariable int linkId) {
 
         UrlMapping urlMapping = urlMappingService.findById(linkId);
 
         // throw exception if null
 
         if (urlMapping == null) {
-            throw new RuntimeException("the link id not found - " + linkId);
+            throw new NotFoundException("the link id not found - " + linkId);
         }
 
         urlMappingService.deleteById(linkId);
 
-        return "Deleted the urlmapping id - " + linkId;
+        return new ResponseEntity<>("Deleted the urlmapping id - " + linkId, HttpStatus.OK);
+    }
+
+    @GetMapping("/links/paging")
+    public Page<UrlMapping> getUrlMappingPaging(
+            @RequestParam int page,
+            @RequestParam int size) {
+        return urlMappingService.findAll(page, size);
     }
 
 }
